@@ -1,4 +1,4 @@
-export const host = process.env.REACT_APP_BASE_URL;
+export const host = "https://baatcheet-backend-1hza.onrender.com";
 
 export const loginRoute = `${host}/api/auth/login`;
 export const SignupRoute = `${host}/api/auth/signup`;
