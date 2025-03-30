@@ -51,26 +51,21 @@
     return (
       <div className="flex flex-col w-full h-screen gap-4 items-center justify-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 relative">
         <Logout />
-        {/* Robot GIF */}
-        {/* <div className="w-[100px] h-[100px] md:w-[100px] md:h-[100px] object-cover object-center rounded-full">
-            <img src={Robot} alt="Robot" />
-        </div> */}
-
-        <div className="w-[250px] h-[250px] md:w-[250px] md:h-[250px] object-cover object-center rounded-full transform translate-y-[-150px]">
-            <img src={Robot} alt="Robot" />
+        {/* Robot Image */}
+        <div className="w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 object-cover object-center rounded-full transform translate-y-[-50px] md:translate-y-[-80px]">
+          <img src={Robot} alt="Robot" />
         </div>
 
-
         {/* Welcome Message */}
-        <div className="absolute flex flex-col items-center top-[420px] min-[1350px]:min-h-[700px] min-[1350px]:top-[580px] md:top-[440px] pl-4">
-          <h1 className="text-white font-bold text-3xl md:text-4xl">
+        <div className="relative text-center mt-4">
+          <h1 className="text-white font-bold text-2xl md:text-3xl lg:text-4xl">
             Welcome,{" "}
-            <span className={`${color} font-bold pl-1 text-3xl md:text-3xl`}>
+            <span className={`${color} font-bold text-2xl md:text-3xl lg:text-4xl`}>
               {userName}!
             </span>
           </h1>
-          <h3 className="text-white font-bold text-lg md:text-xl mt-4">
-              Pick a chat and let's get the convo rolling!
+          <h3 className="text-white font-medium text-md md:text-lg lg:text-xl mt-2">
+            Pick a chat and let's get the convo rolling!
           </h3>
         </div>
       </div>
