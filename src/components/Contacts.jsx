@@ -40,11 +40,14 @@ export default function Contacts({ contacts, changeChat, setflag, flag }) {
 
   useEffect(() => {
     const fun1 = async () => {
-      const data = await JSON.parse(
-        localStorage.getItem(process.env.REACT_APP_LOCAL_KEY)
-      );
-      setCurrentUserName(data.username);
-      setCurrentUserImage(data.avatarImage);
+      const storedData = localStorage.getItem(process.env.REACT_APP_LOCAL_KEY);
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        setCurrentUserName(data?.username || "Guest"); 
+        setCurrentUserImage(data?.avatarImage || "default-avatar.png"); 
+      } else {
+        console.warn("No user data found in localStorage");
+      }
     };
     fun1();
   }, []);
