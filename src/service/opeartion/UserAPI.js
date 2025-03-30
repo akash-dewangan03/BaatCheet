@@ -105,22 +105,18 @@ export const setAvatar = async ({ navigate, user, image }) => {
       throw new Error(response?.data?.message);
     }
 
-    if (response.data.isSet) {
-      user.isAvatarImageSet = true;
-      user.avatarImage = response.data.image;
+    const updatedUser = { ...user, isAvatarImageSet: true, avatarImage: response.data.image };
+    
+    localStorage.setItem(
+      process.env.REACT_APP_LOCAL_KEY,
+      JSON.stringify(updatedUser)
+    );
 
-      localStorage.setItem(
-        process.env.REACT_APP_LOCAL_KEY,
-        JSON.stringify(user)
-      );
-      toast.success("Avatar added Successfully");
-
-      setTimeout(() => navigate("/"), 1500);
-    } else {
-      toast.error("Error setting avatar. Please try again.");
-    }
+    toast.success("Avatar added successfully");
+    setTimeout(() => navigate("/"), 1500);
   } catch (error) {
-    console.log("setAvatar API ERROR............", error);
+    console.error("setAvatar API ERROR", error);
+    toast.error("Error setting avatar. Please try again.");
   }
 
   toast.dismiss(toastId);
