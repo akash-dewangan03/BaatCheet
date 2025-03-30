@@ -5,10 +5,11 @@ import loader from "../assets/loader.gif";
 import { toast } from "react-hot-toast";
 import { setAvatar } from "../service/opeartion/UserAPI";
 import { useNavigate } from "react-router-dom";
-import { apiConnector } from "../service/apiconnector";
+// import { apiConnector } from "../service/apiconnector";
+import multiavatar from "@multiavatar/multiavatar/esm";
 
 export default function SetAvatar() {
-  const api = `https://api.multiavatar.com/4645646`;
+  // const api = `https://api.multiavatar.com/4645646`;
   const navigate = useNavigate();
   const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,38 +23,61 @@ export default function SetAvatar() {
     fun1();
   }, [navigate]);
 
+  useEffect(() => {
+    const generateAvatars = async () => {
+      setIsLoading(true);
+      try {
+        const data = [];
+        for (let i = 0; i < 4; i++) {
+          const avatarSVG = multiavatar(Math.random().toString(36).substring(7));
+          const base64Avatar = Buffer.from(avatarSVG).toString("base64"); // Convert to Base64
+          data.push(base64Avatar);
+        }
+        setAvatars(data);
+      } catch (error) {
+        console.error("Error generating avatars:", error);
+      }
+      setIsLoading(false);
+    };
+
+    generateAvatars();
+  }, []);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCAL_KEY));
+    if (storedUser?.avatarImage) {
+      setSelectedAvatar(storedUser.avatarImage);  // Set the avatar to the selected one
+    }
+  }, []);  
+
   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
       toast.error("Please select an avatar");
-    } else {
-      const user = await JSON.parse(
-        localStorage.getItem(process.env.REACT_APP_LOCAL_KEY)
-      );
-
-      await setAvatar({ navigate, user, image: avatars[selectedAvatar] });
+      return;
     }
+    setIsLoading(true);
+    const user = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCAL_KEY));
+    
+  
+    try {
+      const response = await setAvatar({ navigate, user, image: avatars[selectedAvatar] });
+
+      if (response.success) {
+        user.avatarImage = response.image;
+        localStorage.setItem(process.env.REACT_APP_LOCAL_KEY, JSON.stringify(user));
+
+        toast.success("Avatar updated successfully!");
+        navigate("/"); // Redirect to homepage after setting avatar
+      } else {
+        toast.error("Failed to set avatar. Try again.");
+      }
+    } catch (error) {
+      console.error("Error setting avatar:", error);
+      // toast.error("An error occurred while setting the avatar.");x
+    }
+    setIsLoading(false);
   };
 
-  useEffect(() => {
-    const fun1 = async () => {
-      const data = [];
-      for (let i = 0; i < 4; i++) {
-        // const image = await axios.get(
-        //   `${api}/${Math.round(Math.random() * 1000)}`
-        // );
-
-        const image = await apiConnector(
-          "GET",
-          `${api}/${Math.round(Math.random() * 1000)}`
-        );
-        const buffer = new Buffer(image.data);
-        data.push(buffer.toString("base64"));
-      }
-      setAvatars(data);
-      setIsLoading(false);
-    };
-    fun1();
-  }, [api]);
   return (
     <>
       {isLoading ? (
